@@ -25,14 +25,21 @@ class ImageController
 		
 		$ImgArgs = $this->imgView->getArgsFromURL();
 
-		$img = $this->contentCatalog->getContentImgByID($ImgArgs['src']);
+		$check =self::$galleryPath.DIRECTORY_SEPARATOR.$ImgArgs['src'];
+		if(is_file($check))
+		{
+			$img = $this->contentCatalog->getContentImgByID($ImgArgs['src']);
 
-		$GD = new ImageGD();
+			$GD = new ImageGD();
 
-		$headerInfo = $GD->getHeaderInfo($ImgArgs,$img);
 
-		$this->imgView->renderHTML($headerInfo['header'], $headerInfo['cacheFileName']);
- 		
+			$headerInfo = $GD->getHeaderInfo($ImgArgs,$img);
+
+			$this->imgView->renderHTML($headerInfo['header'], $headerInfo['cacheFileName']);
+
+		}
+		
+		
 	}
 
 

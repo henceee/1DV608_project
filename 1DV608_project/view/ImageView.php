@@ -5,7 +5,7 @@ class ImageView
 	public $title ="";
 	public $response ="";
 	private $viewImgHTML;
-
+	public $message="";
 	/**
 	*	Access all the argumentrs in the URL
 	*	@return array - arguments from the URL
@@ -51,7 +51,7 @@ class ImageView
 	{		
 			header($header);
 			readfile($path);			
-			$this->response = "<img src='$path'/>";			
+			$this->response = $this->message."<img src='$path'/>";			
 	}
 	
 }
