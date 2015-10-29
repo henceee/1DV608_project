@@ -15,6 +15,11 @@ class ContentController
 		$this->contentCatalog = $contentCatalog;
 	}
 
+	/**
+	*	Get all the content from the database,	
+	*	Save it to the repository and return it.
+	*	@return ContentCatalog contentCatalog
+	*/
 	public function getContent()
 	{
 		$allContent = $this->DAL->getContent();
@@ -36,6 +41,12 @@ class ContentController
 		return $this->contentCatalog;
 
 	}
+
+	/**
+	*	Get a specific content by unique
+	*	identifier.
+	*	@return Content content
+	*/
 
 	public function getContentByID($id)
 	{

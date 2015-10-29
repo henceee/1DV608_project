@@ -16,6 +16,7 @@ class AdminView
 	private static $msgMessage = "message";
 
 	public $title="Upload Image";
+	public $errmsg ='';
 	public $response ='';
 	public $cachePath ='';
 
@@ -102,16 +103,9 @@ class AdminView
 
 
 	/**
-	*	Get message to be outputted	
-	*	@return string message
+	*
+	*
 	*/
-	public function getMessage()
-	{
-		$message = isset($_SESSION[self::$msgMessage])? $_SESSION[self::$msgMessage] : $_SESSION[self::$msgMessage]="";
-		unset($_SESSION[self::$msgMessage]);
-		return $message;
-	}
-
 	public function getUploadedImage()
 	{
 		if($this->userHasSubmitted())
@@ -125,7 +119,7 @@ class AdminView
 			}
 			
 
-			$_SESSION[self::$msgMessage] = "Invalid file extension. Only png,jpg, jpeg allowed.";
+			$this->errmsg .= "Invalid file extension. Only png,jpg, jpeg allowed.";
 			return null;
 		}
 		
@@ -146,6 +140,7 @@ class AdminView
 	*/
 	public function renderHTML()
 	{
+
 		if($this->ImageArgExist() && is_file($this->cachePath.$_GET['img']))
 		{
 			$imgHTML = "<img src=".$this->cachePath.$_GET['img'].">";
@@ -156,6 +151,7 @@ class AdminView
 
 				$this->response="
 				<form method='POST'>
+				<p id='". self::$message ."'>". $this->errmsg ."</p>
 				<label for='".self::$titleInput."'> Title </label><br>
 				<input type='text' id='".self::$titleInput."' name='".self::$titleInput."'/><br><br>
 				".$imgHTML."<br>
@@ -192,7 +188,7 @@ class AdminView
 		{
 			$this->response .= "
 			 <form method='POST' enctype= 'multipart/form-data'>
-			 <p id='". self::$message ."'>". $this->getMessage() ."</p>
+			 <p id='". self::$message ."'>". $this->errmsg ."</p>
 			 <input type='file' name='".self::$imageFile."' id='".self::$imageFile."'><br><br>
 			 
 			 <br>

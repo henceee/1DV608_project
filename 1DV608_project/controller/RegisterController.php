@@ -5,7 +5,7 @@ class RegisterController
 
 	private $model;
 	private $view;
-	protected static $msgMessage	 = 'message';
+	private static $msgMessage ="message";
 	
 	public function __construct(RegFacade $reg, RegView $regView)
 	{
@@ -30,19 +30,20 @@ class RegisterController
 			if(!is_null($username) && !is_null($password))
 			{
 				$user = new User($username, $password);
+
 				try
 				{
 					$this->model->add($user);
 					$_SESSION[self::$msgMessage] = "Registered new user.";
-					//header("location:?login");
+					
 				}
 				catch (noUserNameException $e)
 				{
-					$_SESSION[self::$msgMessage] = "Username has too few characters, at least 3 characters";		
+					$_SESSION[self::$msgMessage] .= "Username has too few characters, at least 3 characters";		
 				} 
 				catch (noPassWordException $e)
 				{
-					$_SESSION[self::$msgMessage] = "Password has too few characters, at least 6 characters.";		
+					$_SESSION[self::$msgMessage] .= "Password has too few characters, at least 6 characters.";		
 				} 
 				catch (Exception $e)
 				{

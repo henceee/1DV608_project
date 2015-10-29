@@ -191,6 +191,7 @@ class ImageGD
 			$this->pathToImage = $src;
 		}
 
+		$image = null;
 		switch($fileExtension) {  
 
 		case 'jpg':

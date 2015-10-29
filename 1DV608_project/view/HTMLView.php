@@ -2,7 +2,7 @@
 
 class HTMLView
 {
-  //TODO BACK LINK OR YOU ARE HERE
+
 	/**
 	*	@param view
 	*	@param string charSet
@@ -65,4 +65,7 @@ class HTMLView
   {
     return isset($_SESSION['user']);      
   }
+
+  
+
 }

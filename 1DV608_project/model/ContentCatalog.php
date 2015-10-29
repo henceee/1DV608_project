@@ -74,6 +74,6 @@ class ContentCatalog
 	*/
 	public function getContentByID($ID)
 	{
-		return $this->content[$ID];
+		return isset($this->content[$ID])? $this->content[$ID] : null;
 	}
 }

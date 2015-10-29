@@ -12,13 +12,10 @@ class LoginView extends globalsLogin
 	function __construct($nav)
 	{
 		$this->nav = $nav;
-		//$this->title = $this->getTitle();
+		
 	}
 
-	public function getTitle()
-	{
-		return isset($_SESSION['user']) ? "Logout" :"Login";
-	}
+	
 
 	/**
 	* Generate HTML code on the output buffer for the logout button
@@ -92,4 +89,21 @@ class LoginView extends globalsLogin
 		return (isset($_SESSION['user'])) ?
 			$this->generateLogoutButtonHTML() : $this->generateLoginFormHTML();
 	}
+
+	/**
+  * Generate HTML code depending on login-status
+  * @param bool $isLoggedIn
+  * @return  void
+  */
+  private function renderIsLoggedIn()
+  {
+    if (isset($_SESSION['user'])) {
+      return '<h2>Logged in</h2>';
+    }
+    else {
+      return '<h2>Not logged in</h2>';
+    }
+
+    
+  }
 }

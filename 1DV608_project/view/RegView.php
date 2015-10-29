@@ -67,15 +67,19 @@ class RegView extends globalsRegView
 		$password = $_POST[self::$passPostID]; 
 		$password2 = $_POST[self::$pass2PostID]; 
 
-		if(strlen($password) < 6)
+		if($password ==$password2)
 		{
-			$_SESSION[self::$msgMessage] = "Password has too few characters, at least 6 characters.";
-		}
-		else
-		{
+			if(strlen($password) < 6)
+			{
+			@$_SESSION[self::$msgMessage] .= "Password has too few characters, at least 6 characters.";
+			}
+			else
+			{
 			return $password;
+			}	
 		}
-		$_SESSION[self::$msgMessage]  = "Passwords do not match";
+		
+		@$_SESSION[self::$msgMessage]  .= "Passwords do not match";
 
 		return null;
 	}
@@ -91,14 +95,14 @@ class RegView extends globalsRegView
 		
 			if(preg_match("/(\W)(\D)(\S)/", $username))
 			{
-				$_SESSION[self::$msgMessage]  ="Username contains invalid characters";
+				@$_SESSION[self::$msgMessage]  .="Username contains invalid characters";
 			}
 			else
 			{			
 				if(strlen($username) < 3)
 				{
 					
-						$_SESSION[self::$msgMessage] = "Username has too few characters, at least 3 characters.";
+					@$_SESSION[self::$msgMessage] .= "Username has too few characters, at least 3 characters.";
 				}
 				else
 				{
@@ -112,7 +116,7 @@ class RegView extends globalsRegView
 	*	@return void
 	*/
 	public function setDuplicate() {
-		$_SESSION[self::$msgMessage]  = "User exists, pick another username.";
+		@$_SESSION[self::$msgMessage]  .= "User exists, pick another username.";
 	}
 
 	

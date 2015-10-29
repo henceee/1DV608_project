@@ -10,6 +10,10 @@ class navigationView
 	private static $uploadUrl ="admin";
 
 
+	/**
+	*	
+	*	@return void
+	*/
 	public function redirToAdmin()
 	{
 		header("location:?".self::$uploadUrl);

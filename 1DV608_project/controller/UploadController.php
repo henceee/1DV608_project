@@ -7,9 +7,14 @@ require_once('model/ImageText.php');
 
 class UploadController
 {
-	private $view;
-								
-	
+	private $view;	
+	private	$users;
+	private	$contentDAL;
+	private	$GD; 
+	private	$galleryPath;
+	private $image;
+	private $imgResource;
+	private $allowedExtensions = array('jpg','jpeg','png');
 
 	function __construct($view,ContentDAL $DAL, UserCatalog $users)
 	{
@@ -21,18 +26,26 @@ class UploadController
 		$this->view->cachePath = $this->GD->getCachePath();
 	}
 
+
 	/**
 	*	Get the uploaded image, cache it and output it.
 	*	@return void
 	*/
 	public function saveCacheAndOutput($value='')
 	{
-		$this->image =$this->view->getUploadedImage();
-		$baseName = preg_replace("( )", "_", $this->image['name']);				
-		$this->extension = pathinfo($baseName)['extension'];
-		$this->imgResource =$this->GD->checkFileExtension($this->extension,$this->image['tmp_name']);		
-		$this->saveCache($baseName);
-		header('location:?admin&img='.$baseName);
+		$image = $this->view->getUploadedImage();
+		if(!is_null($image))
+		{
+			$this->image = $image;
+			$baseName = preg_replace("( )", "_", $this->image['name']);				
+			$extension = pathinfo($baseName)['extension'];
+			
+			$this->extension = $extension;
+			$this->imgResource =$this->GD->checkFileExtension($this->extension,$this->image['tmp_name']);		
+			$this->saveCache($baseName);
+			header('location:?admin&img='.$baseName);
+			
+		}
 	}
 
 	/**
@@ -81,19 +94,20 @@ class UploadController
 	{
 		$user = $this->users->getUserByName($_SESSION['user']);
 				
-				$ID =$user->getID();
-				$title = $this->view->getTitle();
-				$desc = $this->view->getDesc();
-				if(!is_null($ID) && !empty($title) && !empty($desc))
-				{
-					$uniqeStamp = uniqid();
-					$pathToSaveTo = $this->galleryPath.DIRECTORY_SEPARATOR.$uniqeStamp.$name;
-					//Save to gallery path
-					$this->GD->checkSaveAs($this->extension,$this->imgResource, $pathToSaveTo);
+		$ID =$user->getID();
+		$title = $this->view->getTitle();
+		$desc = $this->view->getDesc();
+		if(!is_null($ID) && !empty($title) && !empty($desc))
+		{
+			$uniqeStamp = uniqid();
+			$pathToSaveTo = $this->galleryPath.DIRECTORY_SEPARATOR.$uniqeStamp.$name;
+			//Save to gallery path
+			$this->GD->checkSaveAs($this->extension,$this->imgResource, $pathToSaveTo);
 
-					$this->contentDAL->insertContent($ID,$title,$uniqeStamp.$name,$desc);
-					header('location:?');
-				}
+			$this->contentDAL->insertContent($ID,$title,$uniqeStamp.$name,$desc);
+			header('location:?');
+		}
+		$this->view->errmsg = "All fields must be filled in.";	
 	}
 
 	/**
@@ -123,18 +137,32 @@ class UploadController
 			$this->image = $this->view->getImage();
 			$this->extension = pathinfo($this->image,PATHINFO_EXTENSION);
 			$cachedFile = $this->view->cachePath.$this->image;
-			$this->imgResource =$this->GD->checkFileExtension($this->extension, $cachedFile);		
-			$name = basename($this->image);
-
-			if($this->view->userWantsToPreview())
+			
+			
+			$imgResource =$this->GD->checkFileExtension($this->extension, $cachedFile);			
+			
+			if(!is_null($imgResource))
 			{
-				$this->addTextAndPreview($name);
-			}	
+				$this->imgResource = $imgResource;
 
-			if($this->view->userWantsToSave())
-			{
-				$this->saveContent($name);					
+				$name = basename($this->image);
+
+				if($this->view->userWantsToPreview())
+				{
+					$this->addTextAndPreview($name);
+				}	
+
+				if($this->view->userWantsToSave())
+				{
+					$this->saveContent($name);					
+				}		
 			}
+			else
+			{
+				$this->view->errmsg = "Oops something went wrong";	
+			}
+			 
+			
 		}
 
 		$this->view->renderHTML();		
